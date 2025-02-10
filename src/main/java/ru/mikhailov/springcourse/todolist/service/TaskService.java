@@ -12,7 +12,7 @@ import java.util.List;
 public interface TaskService {
     public List<Task> findAllTasks();
 
-    Task addTask(Long userId, Task task);
+    Task addTask(Task task);
     Task findTask(String taskName);
     Task updateTask(Task task);
     void deleteTask(String taskName);

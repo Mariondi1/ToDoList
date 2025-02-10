@@ -21,7 +21,7 @@ public class InMemoryTaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task addTask(Long userId, Task task) {
+    public Task addTask(Task task) {
         return taskRepository.saveTask(task);
     }
 

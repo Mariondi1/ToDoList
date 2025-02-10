@@ -23,11 +23,8 @@ public class ToDoController {
     }
 
     @PostMapping
-    public Task addTask(Long userId, Task task) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        task.setUser(user);
-        return taskRepository.save(task);
+    public Task addTask(Task task) {
+        return taskService.addTask(task);
 }
 
     @GetMapping("/{taskName}")
