@@ -2,8 +2,8 @@ package ru.mikhailov.springcourse.todolist.controllers;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.mikhailov.springcourse.todolist.models.Task;
-import ru.mikhailov.springcourse.todolist.models.User;
+import ru.mikhailov.springcourse.todolist.DTO.TaskDTO;
+import ru.mikhailov.springcourse.todolist.models.TaskStatus;
 import ru.mikhailov.springcourse.todolist.service.TaskService;
 
 import java.util.List;
@@ -15,30 +15,44 @@ public class ToDoController {
     private final TaskService taskService;
 
 
-
-
     @GetMapping
-    public List<Task> findAllTasks(){
+    public List<TaskDTO> findAllTasks(){
         return taskService.findAllTasks();
     }
 
+    @GetMapping("/filter")
+    public List<TaskDTO> filterTasksByStatus(@RequestParam TaskStatus status) {
+        return taskService.findTasksByStatus(status);
+    }
+
     @PostMapping
-    public Task addTask(Task task) {
-        return taskService.addTask(task);
+    public TaskDTO addTask(@RequestBody TaskDTO taskDTO) {
+        return taskService.addTask(taskDTO);
 }
 
-    @GetMapping("/{taskName}")
-    public Task findTask(@PathVariable("taskName") String taskName) {
-        return taskService.findTask(taskName);
+    @GetMapping("/{taskId}") // Изменили с taskName на taskId
+    public TaskDTO findTask(@PathVariable("taskId") Long taskId) {
+        return taskService.findTask(taskId);
     }
 
-    @PutMapping("/update_task")
-    public Task updateTask(@RequestBody Task taskName) {
-        return taskService.updateTask(taskName);
+    @PutMapping("/update_task/{taskId}") // Теперь передаем taskId
+    public TaskDTO updateTask(@PathVariable Long taskId, @RequestBody TaskDTO taskDTO) {
+        taskDTO.setId(taskId); // Устанавливаем ID из пути в DTO
+        return taskService.updateTask(taskDTO);
     }
 
-    @DeleteMapping("/delete_task/{taskName}")
-    public void  deleteTask(@PathVariable String taskName) {
-        taskService.deleteTask(taskName);
+    @DeleteMapping("/delete_task/{taskId}")
+    public void deleteTask(@PathVariable Long taskId) {
+        taskService.deleteTask(taskId);
+    }
+
+    @GetMapping("/sort/by-date")
+    public List<TaskDTO> sortTasksByDate() {
+        return taskService.findAllTasksSortedByDate();
+    }
+
+    @GetMapping("/sort/by-status")
+    public List<TaskDTO> sortTasksByStatus() {
+        return taskService.findAllTasksSortedByStatus();
     }
 }

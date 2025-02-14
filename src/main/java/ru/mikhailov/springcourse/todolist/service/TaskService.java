@@ -1,20 +1,21 @@
 package ru.mikhailov.springcourse.todolist.service;
 
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-import ru.mikhailov.springcourse.todolist.models.Task;
-import ru.mikhailov.springcourse.todolist.models.User;
-import ru.mikhailov.springcourse.todolist.repository.TaskRepository;
+
+import ru.mikhailov.springcourse.todolist.DTO.TaskDTO;
+import ru.mikhailov.springcourse.todolist.models.TaskStatus;
+
 
 import java.util.List;
 
 
 public interface TaskService {
-    public List<Task> findAllTasks();
-
-    Task addTask(Task task);
-    Task findTask(String taskName);
-    Task updateTask(Task task);
-    void deleteTask(String taskName);
-
+    List<TaskDTO> findAllTasks();
+    TaskDTO addTask(TaskDTO taskDTO);
+    TaskDTO findTask(Long taskId);
+    TaskDTO updateTask(TaskDTO taskDTO);
+    void deleteTask(Long taskId);
+    List<TaskDTO> findTasksByStatus(TaskStatus status);
+    List<TaskDTO> findAllTasksSortedByDate();
+    List<TaskDTO> findAllTasksSortedByStatus();
 }
+

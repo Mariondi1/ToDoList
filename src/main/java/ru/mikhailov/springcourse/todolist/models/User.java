@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -13,11 +14,16 @@ public class User {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
-        @Column(unique = true, nullable = false)
+
+
         @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
         private List<Task> tasks = new ArrayList<>();
+
+        @Column(unique = true, nullable = false)
         private String login;
         private String password;
-        private String roles;
+        @ElementCollection(fetch = FetchType.EAGER)
+        @Enumerated(EnumType.STRING)
+        private Set<Role> roles;
 
 }
