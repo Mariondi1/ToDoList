@@ -4,9 +4,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,13 +20,25 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())  // Отключаем CSRF
+                .csrf(AbstractHttpConfigurer::disable)  // Отключаем CSRF (если работаем с REST)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/tasks/**").authenticated()  // Требуется аутентификация
+                        .requestMatchers("/api/v1/users/register").permitAll()  // Регистрация открыта
+                        .requestMatchers("/api/v1/tasks/**").authenticated()  // Только для аутентифицированных
                         .anyRequest().permitAll()
                 )
-                .formLogin(Customizer.withDefaults())  // Включаем стандартный логин
-                .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/")); // Выход
+                .formLogin(form -> form  // Включаем стандартную форму логина
+                        .loginPage("/login")  // Страница входа
+                        .defaultSuccessUrl("/tasks", true)  // После успешного входа
+                        .permitAll()
+                )
+                .logout(logout -> logout  // Настраиваем выход
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .permitAll()
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)  // Создавать сессию при входе
+                );
 
         return http.build();
     }

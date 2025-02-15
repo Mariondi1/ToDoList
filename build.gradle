@@ -41,8 +41,6 @@ dependencies {
     testImplementation 'org.mockito:mockito-core'
     testImplementation 'org.mockito:mockito-junit-jupiter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    implementation 'org.slf4j:slf4j-api:1.7.32'
-    implementation 'org.slf4j:slf4j-simple:1.7.32'
 }
 
 tasks.named('test') {

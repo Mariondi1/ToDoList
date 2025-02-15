@@ -4,17 +4,19 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.mikhailov.springcourse.todolist.models.Task;
 import ru.mikhailov.springcourse.todolist.models.TaskStatus;
+import ru.mikhailov.springcourse.todolist.models.User;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
-    List<Task> findByUser_Login(String login);
-    List<Task> findByUser_LoginAndStatus(String login, TaskStatus status);
-    List<Task> findByUser_LoginAndStatusOrderByTaskDateAsc(String login, TaskStatus status);
-    List<Task> findByUser_LoginOrderByTaskDateAsc(String login);
-    List<Task> findByUser_LoginOrderByStatusAsc(String login);
+    List<Task> findByUser(User user);
+    Optional<Task> findByIdAndUser(Long id, User user);
+    List<Task> findByUserAndStatus(User user, TaskStatus status);
+    List<Task> findByUserOrderByTaskDateAsc(User user);
+    List<Task> findByUserOrderByStatus(User user);
 }
 
 
