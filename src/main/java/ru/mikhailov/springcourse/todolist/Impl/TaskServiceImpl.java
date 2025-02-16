@@ -17,6 +17,8 @@ import ru.mikhailov.springcourse.todolist.repository.UserRepository;
 import ru.mikhailov.springcourse.todolist.service.TaskService;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,6 +49,17 @@ public class TaskServiceImpl implements TaskService {
         User user = getUserByLogin(login);
         Task task = taskMapper.toTask(taskDTO);
         task.setUser(user);
+
+        // Проверяем дедлайн: если он не передан, ставим +1 день, если в прошлом — выбрасываем исключение
+        if (taskDTO.getTaskDate() == null) {
+            task.setTaskDate(LocalDate.now().plusDays(1));
+        } else {
+            if (taskDTO.getTaskDate().isBefore(LocalDate.now())) {
+                throw new IllegalArgumentException("Нельзя установить дедлайн в прошлом");
+            }
+            task.setTaskDate(taskDTO.getTaskDate());
+        }
+
         Task savedTask = taskRepository.save(task);
         return taskMapper.toTaskDTO(savedTask);
     }
